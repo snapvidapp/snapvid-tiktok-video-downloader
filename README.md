@@ -1,107 +1,161 @@
-About The Project
-A powerful yet simple library that allows you to [download TikTok videos without watermarks](https://snapvid.app). Inspired by GetFVID.io, this open-source solution provides developers with the tools to integrate TikTok video downloading functionality into their applications.
-Our library supports both regular TikTok videos and TikTok slideshows, ensuring comprehensive content access in high quality formats.
-Features
+# SnapVid — TikTok Video Downloader & Converter Library
 
-🎯 Watermark-Free Downloads: Remove those distracting TikTok watermarks completely
+[![npm version](https://img.shields.io/badge/npm-v1.2.0-blue.svg)](https://en.snapvid.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D16.0.0-green.svg)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://en.snapvid.app/)
 
-🎥 High Definition Quality: Maintain the original video quality (up to 1080p)
+A lightweight, powerful, and developer-friendly Node.js library that allows developers to [download TikTok videos without watermark](https://en.snapvid.app/) in high-definition (HD & Full HD).
 
-🖼️ TikTok Slideshow Downloader: Extract slideshows and photo collections from TikTok
+Backed by the core parsing algorithms behind **[SnapVid](https://en.snapvid.app/)**, this library provides full access to TikTok media streams, photo carousels, and audio tracks with zero external binary dependencies.
 
-🔄 Multiple Format Support: Download in MP4, MP3, and more
+---
 
-⚡ Fast Processing: Optimized algorithms for quick downloads
+## 🌐 Live Web Version
 
-🔑 API Access: Simple RESTful API for integration
+> **Not a developer?** If you are looking for an instant, browser-based utility that works without installing packages or writing code, use the official web tool:  
+> 👉 **[SnapVid — TikTok Video Downloader](https://en.snapvid.app/)**
 
-📱 Cross-Platform Support: Works on all major platforms
+---
 
+## ✨ Features
 
-Installation
+- 🎯 **Watermark-Free Video Downloads:** Automatically resolve clean MP4 streams without the bouncing TikTok logo or creator ID overlay.
+- 🖼️ **[TikTok Slideshow Downloader](https://en.snapvid.app/download-tiktok-slide):** Extract full-resolution individual photos from carousel posts or render them into video presentations.
+- ⏳ **[TikTok Story Downloader](https://en.snapvid.app/download-tiktok-stories):** Fetch temporary 24-hour public stories before they expire.
+- 🎵 **[Extract TikTok MP3 Audio](https://en.snapvid.app/download-tiktok-mp3):** Isolate soundtrack and audio streams directly into standard MP3 audio files.
+- ⚡ **High Performance:** Fast parsing pipeline optimized for low-latency production applications.
+- 📱 **Cross-Platform:** Works across Linux, macOS, and Windows server environments.
 
-bashnpm install tiktok-downloader
-# or
-yarn add tiktok-downloader
-Usage
-Basic Usage
-javascriptconst TikTokDownloader = require('tiktok-downloader');
+---
 
-// Initialize downloader
+## 📦 Installation
+
+Install via `npm`:
+
+```bash
+npm install snapvid-tiktok-downloader
+```
+
+Or via `yarn`:
+
+```bash
+yarn add snapvid-tiktok-downloader
+```
+
+---
+
+## 🚀 Usage
+
+### 1. Basic Video Download (Without Watermark)
+
+```javascript
+const TikTokDownloader = require('snapvid-tiktok-downloader');
+
+// Initialize client
 const downloader = new TikTokDownloader({
   output: './downloads',
   format: 'mp4',
   quality: 'high'
 });
 
-// Download a TikTok video without watermark
+// Download clean video
 downloader.download('https://www.tiktok.com/@username/video/1234567890123456789')
   .then(file => {
-    console.log(`Video downloaded to: ${file.path}`);
+    console.log(`Video successfully saved to: ${file.path}`);
   })
   .catch(err => {
-    console.error('Download failed:', err.message);
+    console.error('Download error:', err.message);
   });
-[Download TikTok Slideshow]([https://example.com](https://snapvid.app/download-tiktok-slide))
-javascript// For downloading slideshows with all images
+```
+
+---
+
+### 2. Downloading TikTok Photo Slideshows
+
+For carousel posts containing multiple images, use the built-in [TikTok slideshow handler](https://en.snapvid.app/download-tiktok-slide):
+
+```javascript
+// Download all photos from a TikTok photo post
 downloader.downloadSlideshow('https://www.tiktok.com/@username/video/1234567890123456789')
-  .then(files => {
-    console.log(`Slideshow downloaded with ${files.length} images`);
-    files.forEach(file => console.log(`- ${file.path}`));
+  .then(response => {
+    console.log(`Downloaded ${response.images.length} full-resolution photos.`);
+    response.images.forEach(img => console.log(`- ${img.path}`));
   })
   .catch(err => {
-    console.error('Slideshow download failed:', err.message);
+    console.error('Slideshow extraction failed:', err.message);
   });
-API Documentation
+```
 
-Class: TikTokDownloader
+---
 
-Constructor Options
+### 3. Extracting Audio / MP3
 
-OptionTypeDefaultDescriptionoutputstring'./downloads'Output directory for downloaded filesformatstring'mp4'Output format (mp4, mp3, webm)qualitystring'high'Video quality (low, medium, high)filenamePatternstring'{username}-{id}'Pattern for naming downloaded files
+If you only require the sound effect or background music, extract the audio directly via the [MP3 extractor](https://en.snapvid.app/download-tiktok-mp3):
 
-Methods
+```javascript
+downloader.downloadAudio('https://www.tiktok.com/@username/video/1234567890123456789')
+  .then(audio => {
+    console.log(`Audio track saved to: ${audio.path}`);
+  });
+```
 
-download(url, options): Download a single TikTok video
+---
 
-downloadSlideshow(url, options): Download all images from a TikTok slideshow
+## 📖 API Documentation
 
-downloadBatch(urls, options): Download multiple TikTok videos
+### Constructor Options
 
-getInfo(url): Get metadata about a TikTok video
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `output` | `string` | `'./downloads'` | Target directory for storing downloaded files |
+| `format` | `string` | `'mp4'` | Media container output (`mp4`, `mp3`, `webm`) |
+| `quality` | `string` | `'high'` | Desired resolution profile (`low`, `medium`, `high`) |
+| `filenamePattern` | `string` | `'{username}-{id}'` | Dynamic naming pattern for downloaded assets |
 
-WebUI Integration
+### Main Methods
 
-This library also includes a simple web interface for demonstration:
+- `download(url, options)`: Resolves and downloads a clean video without watermark.
+- `downloadSlideshow(url, options)`: Downloads all underlying images from a photo-mode TikTok.
+- `downloadAudio(url, options)`: Extracts and saves the standalone audio track.
+- `getInfo(url)`: Fetches metadata, author details, view counts, and available download streams.
 
-bash# Start the web server
+---
 
+## 🖥️ WebUI Integration
+
+A lightweight web demonstration server is included for testing:
+
+```bash
+# Start local demonstration server
 npm run webui
+```
 
-Then open http://localhost:3000 in your browser to use the web interface.
+Then visit `http://localhost:3000` in your browser. For production deployments, refer to the [SnapVid Web Architecture](https://en.snapvid.app/).
 
-License
+---
 
-Distributed under the MIT License. See LICENSE for more information.
+## 🤝 Contributing
 
-Contributing
+Contributions are welcome! If you find bugs or want to request a feature:
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
+1. Fork the repository
+2. Create your branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Fork the Project
+---
 
-Create your Feature Branch (git checkout -b feature/AmazingFeature)
+## ⚖️ License & Disclaimer
 
-Commit your Changes (git commit -m 'Add some AmazingFeature')
+Distributed under the **MIT License**. See `LICENSE` for details.
 
-Push to the Branch (git push origin feature/AmazingFeature)
+**Disclaimer:** This library is an independent open-source tool and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with TikTok, ByteDance, or any of their subsidiaries. Respect copyright and only download content with appropriate permission from the creator.
 
-Open a Pull Request
+---
 
-Acknowledgements
+## 🙏 Acknowledgements
 
-Snapvid.app for inspiration
-
-TikTok API Documentation
-
-All our contributors and supporters
+- **[SnapVid App](https://en.snapvid.app/)** — For core media processing algorithms and web interface inspiration.
+- Open-source Node.js and HTTP parser communities.
